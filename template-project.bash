@@ -5,7 +5,7 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-BRANCH=$1
+BRANCH="$1"
 URL="https://github.com/SamuelDavis/templates/archive/refs/heads/$BRANCH.zip"
 TEMP_FILE="/tmp/templates-$BRANCH.zip"
 OUTPUT=$(readlink --canonicalize "$2")

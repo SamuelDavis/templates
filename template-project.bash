@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 if [ "$#" -ne 2 ]; then
   echo "Incorrect number of arguments."
@@ -8,7 +8,7 @@ fi
 BRANCH="$1"
 URL="https://github.com/SamuelDavis/templates/archive/refs/heads/$BRANCH.zip"
 TEMP_FILE="/tmp/templates-$BRANCH.zip"
-OUTPUT=$(readlink --canonicalize "$2")
+OUTPUT="$PWD/$2"
 CONTAINING_DIR="$OUTPUT/templates-$BRANCH"
 
 echo "URL: \"$URL\", TEMP_FILE: \"$TEMP_FILE\", OUTPUT: \"$OUTPUT\""

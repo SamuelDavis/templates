@@ -9,21 +9,15 @@ BRANCH="$1"
 URL="https://github.com/SamuelDavis/templates/archive/refs/heads/$BRANCH.zip"
 TEMP_FILE="/tmp/templates-$BRANCH.zip"
 OUTPUT="$PWD/$2"
-CONTAINING_DIR="$OUTPUT/templates-$BRANCH"
 
-echo "URL: \"$URL\", TEMP_FILE: \"$TEMP_FILE\", OUTPUT: \"$OUTPUT\""
-
-if ! [ -f "$TEMP_FILE" ]; then
-  curl --location "$URL" --output "$TEMP_FILE"
-else
-  printf "%s already exists\n" "$TEMP_FILE"
-fi
-
-if ! [ -d "$OUTPUT" ]; then
-  unzip "$TEMP_FILE" -d "$OUTPUT"
-else
+if [ -d "$OUTPUT" ]; then
   printf "%s already exists\n" "$OUTPUT"
+  exit 1
 fi
 
-mv "$CONTAINING_DIR"/* "$CONTAINING_DIR"/.* "$OUTPUT"
-rm -rf "$CONTAINING_DIR"
+if [ ! -f "$TEMP_FILE" ]; then
+  curl --location "$URL" --output "$TEMP_FILE"
+fi
+
+unzip "$TEMP_FILE" -d "/tmp/"
+mv "/tmp/templates-$BRANCH" "$OUTPUT"

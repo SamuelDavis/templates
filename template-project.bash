@@ -21,3 +21,9 @@ fi
 
 unzip "$TEMP_FILE" -d "/tmp/"
 mv "/tmp/templates-$BRANCH" "$OUTPUT"
+
+cd "$OUTPUT"
+git init
+git add .
+git commit -m "initialize with $BRANCH"
+cd -

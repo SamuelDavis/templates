@@ -1,12 +1,15 @@
-import type { Component } from "solid-js";
+import { Route, HashRouter } from "@solidjs/router";
+import { lazy } from "solid-js";
 
-const App: Component = () => {
-  const text = "Hello, world!";
+const Layout = lazy(() => import("./Pages/Layout.tsx"));
+const Home = lazy(() => import("./Pages/Home.tsx"));
+const NotFound = lazy(() => import("./Pages/NotFound.tsx"));
+
+export default function App() {
   return (
-    <main>
-      <h1>{text}</h1>
-    </main>
+    <HashRouter root={Layout}>
+      <Route path="/" component={Home} />
+      <Route path="*404" component={NotFound} />
+    </HashRouter>
   );
-};
-
-export default App;
+}

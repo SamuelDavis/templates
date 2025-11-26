@@ -25,5 +25,9 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "node_modules/solid-js/types/server/**",
+    "node_modules/solid-js/store/types/server/**"
+  ]
 }

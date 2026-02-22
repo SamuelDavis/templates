@@ -3,7 +3,7 @@
 set -e
 
 if [ "$#" -ne 2 ]; then
-  echo "Incorrect number of arguments."
+  echo "usage: project-template <template-branch> <project-directory>"
   exit 1
 fi
 

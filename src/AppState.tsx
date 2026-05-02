@@ -1,16 +1,14 @@
 import { createContext, useContext, type ParentProps } from "solid-js";
-import { createStore, type SetStoreFunction } from "solid-js/store";
 
 type AppState = {};
 
-type AppStateContextValue = [AppState, SetStoreFunction<AppState>];
-const AppStateContext = createContext<AppStateContextValue>();
+const AppStateContext = createContext<AppState>();
 
 export function AppStateProvider(props: ParentProps) {
-  const [appState, setAppState] = createStore<AppState>({});
+  const value: AppState = {};
 
   return (
-    <AppStateContext.Provider value={[appState, setAppState]}>
+    <AppStateContext.Provider value={value}>
       {props.children}
     </AppStateContext.Provider>
   );

@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { type ParentProps } from "solid-js";
+import { Suspense, type ParentProps } from "solid-js";
 
 export default function Layout(props: ParentProps) {
   return (
@@ -18,7 +18,9 @@ export default function Layout(props: ParentProps) {
           </ul>
         </nav>
       </header>
-      <main>{props.children}</main>
+      <main>
+        <Suspense fallback={<progress />}>{props.children}</Suspense>
+      </main>
     </>
   );
 }

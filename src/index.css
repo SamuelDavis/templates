@@ -1,18 +1,19 @@
-@layer pico, theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
-@import "@picocss/pico/css/pico.classless.css" layer(pico);
 
-.material-symbols {
-  vertical-align: middle;
-  user-select: none;
-}
+@layer components {
+  [data-icon] {
+    box-sizing: content-box;
+    inline-size: 1em;
+    font-size: 1lh;
+    line-height: 1;
+    overflow: hidden;
+    vertical-align: top;
+    user-select: none;
+  }
 
-.material-symbols[role="button"] {
-  padding: 0.5em;
-  aspect-ratio: 1/1;
-  min-width: 0;
-  min-height: 0;
-  display: grid;
-  place-content: center;
+  [data-icon][role="button"] {
+    padding: 0.125rem;
+    font-size: calc(1lh - 0.25rem - 2 * var(--pico-border-width));
+  }
 }

@@ -1,31 +1,42 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
-if [ "$#" -ne 2 ]; then
-  echo "usage: project-template <template-branch> <project-directory>"
+die() {
+  printf "%s\n" "$1" >&2
   exit 1
-fi
+}
 
-BRANCH="$1"
-URL="https://github.com/SamuelDavis/templates/archive/refs/heads/$BRANCH.zip"
-TEMP_FILE="/tmp/templates-$BRANCH.zip"
-OUTPUT="$PWD/$2"
+download_once() {
+  local url="$1" archive="$2"
+  [ -f "$archive" ] && return
+  curl --fail --location "$url" --output "$archive.part"
+  mv "$archive.part" "$archive"
+}
 
-if [ -d "$OUTPUT" ]; then
-  printf "%s already exists\n" "$OUTPUT"
-  exit 1
-fi
+extract_root() {
+  local archive="$1" output="$2" staging
+  staging="$(mktemp --directory)"
+  trap "rm -rf '$staging'" EXIT
+  unzip -q "$archive" -d "$staging"
+  mv "$staging"/* "$output"
+}
 
-if [ ! -f "$TEMP_FILE" ]; then
-  curl --location "$URL" --output "$TEMP_FILE"
-fi
+init_repo() {
+  local dir="$1" message="$2"
+  git -C "$dir" init
+  git -C "$dir" add .
+  git -C "$dir" commit -m "$message"
+}
 
-unzip "$TEMP_FILE" -d "/tmp/"
-mv "/tmp/templates-$BRANCH" "$OUTPUT"
+[ "$#" -eq 2 ] || die "usage: $(basename "$0") <template-branch> <project-directory>"
 
-cd "$OUTPUT"
-git init
-git add .
-git commit -m "initialize with $BRANCH"
-cd -
+branch="$1"
+output="$2"
+archive="/tmp/templates-${branch//\//-}.zip"
+
+[ -e "$output" ] && die "$output already exists"
+
+download_once "https://github.com/SamuelDavis/templates/archive/refs/heads/$branch.zip" "$archive"
+extract_root "$archive" "$output"
+init_repo "$output" "initialize with $branch"

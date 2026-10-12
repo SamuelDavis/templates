@@ -2,14 +2,24 @@
 
 set -euo pipefail
 
+repository="https://github.com/SamuelDavis/templates"
+usage="usage: $(basename "$0") [--name <name>] <template-branch> <project-directory>"
+
 die() {
   printf "%s\n" "$1" >&2
   exit 1
 }
 
+replace_cache() {
+  local dir="$1"
+  mkdir -p "$dir"
+  find "$dir" -maxdepth 1 -type f -delete
+}
+
 download_once() {
   local url="$1" archive="$2"
   [ -f "$archive" ] && return
+  replace_cache "$(dirname "$archive")"
   curl --fail --location "$url" --output "$archive.part"
   mv "$archive.part" "$archive"
 }
@@ -22,6 +32,33 @@ extract_root() {
   mv "$staging"/* "$output"
 }
 
+latest_commit() {
+  local branch="$1" commit
+  commit="$(git ls-remote "$repository" "refs/heads/$branch" | cut -f1)"
+  [ -n "$commit" ] || die "branch not found: $branch"
+  printf "%s" "$commit"
+}
+
+kebab_case() {
+  printf "%s" "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g'
+}
+
+escape_sed_replacement() {
+  printf "%s" "$1" | sed 's/[&/\]/\\&/g'
+}
+
+replace_text() {
+  local dir="$1" placeholder="$2" replacement="$3" files
+  mapfile -d '' files < <(grep --recursive --files-with-matches --null --binary-files=without-match --fixed-strings -- "$placeholder" "$dir")
+  [ "${#files[@]}" -eq 0 ] || sed -i "s/$placeholder/$(escape_sed_replacement "$replacement")/g" "${files[@]}"
+}
+
+rename_project() {
+  local dir="$1" name="$2"
+  replace_text "$dir" "SolidJS Template" "$name"
+  replace_text "$dir" "solidjs-template" "$(kebab_case "$name")"
+}
+
 init_repo() {
   local dir="$1" message="$2"
   git -C "$dir" init
@@ -29,14 +66,33 @@ init_repo() {
   git -C "$dir" commit -m "$message"
 }
 
-[ "$#" -eq 2 ] || die "usage: $(basename "$0") <template-branch> <project-directory>"
+name=""
+positional=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --name)
+      [ "$#" -ge 2 ] || die "$usage"
+      name="$2"
+      shift 2
+      ;;
+    *)
+      positional+=("$1")
+      shift
+      ;;
+  esac
+done
 
-branch="$1"
-output="$2"
-archive="/tmp/templates-${branch//\//-}.zip"
+[ "${#positional[@]}" -eq 2 ] || die "$usage"
+
+branch="${positional[0]}"
+output="${positional[1]}"
 
 [ -e "$output" ] && die "$output already exists"
 
-download_once "https://github.com/SamuelDavis/templates/archive/refs/heads/$branch.zip" "$archive"
+commit="$(latest_commit "$branch")"
+archive="/tmp/templates/$branch/$commit.zip"
+
+download_once "$repository/archive/$commit.zip" "$archive"
 extract_root "$archive" "$output"
+[ -z "$name" ] || rename_project "$output" "$name"
 init_repo "$output" "initialize with $branch"

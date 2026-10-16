@@ -55,8 +55,8 @@ replace_text() {
 
 rename_project() {
   local dir="$1" name="$2"
-  replace_text "$dir" "SolidJS Template" "$name"
-  replace_text "$dir" "solidjs-template" "$(kebab_case "$name")"
+  replace_text "$dir" "{{NAME}}" "$name"
+  replace_text "$dir" "{{name}}" "$(kebab_case "$name")"
 }
 
 init_repo() {
@@ -94,5 +94,5 @@ archive="/tmp/templates/$branch/$commit.zip"
 
 download_once "$repository/archive/$commit.zip" "$archive"
 extract_root "$archive" "$output"
-[ -z "$name" ] || rename_project "$output" "$name"
+rename_project "$output" "${name:-$(basename "$output")}"
 init_repo "$output" "initialize with $branch"

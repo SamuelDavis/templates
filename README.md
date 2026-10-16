@@ -1,4 +1,4 @@
-# SolidJS Template
+# {{NAME}}
 
 Personal starting point for SolidJS SPAs.
 

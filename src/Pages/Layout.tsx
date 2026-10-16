@@ -13,7 +13,7 @@ export default function Layout(props: ParentProps) {
           </ul>
           <ul>
             <li>
-              <strong>SolidJS Template</strong>
+              <strong>{{ NAME }}</strong>
             </li>
           </ul>
         </nav>

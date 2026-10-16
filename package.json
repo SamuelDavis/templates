@@ -1,5 +1,5 @@
 {
-  "name": "placeholder-project",
+  "name": "@samueldavis/{{name}}",
   "private": true,
   "version": "0.0.0",
   "type": "module",

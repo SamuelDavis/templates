@@ -43,6 +43,10 @@ kebab_case() {
   printf "%s" "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-|-$//g'
 }
 
+escape_sed_pattern() {
+  printf "%s" "$1" | sed 's/[][\/.*^$]/\\&/g'
+}
+
 escape_sed_replacement() {
   printf "%s" "$1" | sed 's/[&/\]/\\&/g'
 }
@@ -50,13 +54,13 @@ escape_sed_replacement() {
 replace_text() {
   local dir="$1" placeholder="$2" replacement="$3" files
   mapfile -d '' files < <(grep --recursive --files-with-matches --null --binary-files=without-match --fixed-strings -- "$placeholder" "$dir")
-  [ "${#files[@]}" -eq 0 ] || sed -i "s/$placeholder/$(escape_sed_replacement "$replacement")/g" "${files[@]}"
+  [ "${#files[@]}" -eq 0 ] || sed -i "s/$(escape_sed_pattern "$placeholder")/$(escape_sed_replacement "$replacement")/g" "${files[@]}"
 }
 
 rename_project() {
   local dir="$1" name="$2"
-  replace_text "$dir" "{{NAME}}" "$name"
-  replace_text "$dir" "{{name}}" "$(kebab_case "$name")"
+  replace_text "$dir" "[[NAME]]" "$name"
+  replace_text "$dir" "[[name]]" "$(kebab_case "$name")"
 }
 
 init_repo() {

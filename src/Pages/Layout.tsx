@@ -10,6 +10,9 @@ export default function Layout(props: ParentProps) {
             <li>
               <A href="/">Home</A>
             </li>
+            <li>
+              <A href="/styleguide">Styleguide</A>
+            </li>
           </ul>
           <ul>
             <li>

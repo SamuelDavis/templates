@@ -1,12 +1,15 @@
 # [[NAME]]
 
-Personal starting point for SolidJS SPAs.
+Personal starting point for SolidJS SPAs: classless semantic HTML styled by Pico, with Tailwind utilities for per-app exceptions.
 
-[solidlib](https://github.com/SamuelDavis/solidlib) should track latest; update it when bootstrapping.
+## State
 
-## Rationale
+- Template: `[[NAME]]` and `[[name]]` placeholders are replaced when bootstrapping.
+- [solidlib](https://github.com/SamuelDavis/solidlib) should track latest; update it when bootstrapping.
+- `/styleguide` renders every styled element; check it after changing `src/pico.css`.
 
-- Rendering into `document.body` lets Pico's classless `body > header/main/footer` styles apply.
-- `src/pico.css` stays outside Tailwind's pipeline: Tailwind inlines imports into layers, where Pico's `@charset` is invalid.
-- `icons` is the lowest layer because Vite hoists the remote icon `@import` above the layer-order statement.
-- `[data-icon]` squares HTMLIcon and sizes it to the surrounding line height, including under Pico's `role="button"` styles.
+## Conventions
+
+- Render into `document.body` so Pico's `body > header/main/footer` styles apply.
+- `src/pico.css` is the app-agnostic classless layer: Pico, its theme, and its extensions. `src/index.css` holds per-app styles and Tailwind.
+- Styling contracts and rationale: [docs/styling.md](docs/styling.md).

@@ -1,0 +1,1 @@
+import{a as e,i as t,l as n,o as r,t as i}from"./index-DwZEHwfa.js";var a=n(`<article><header><h1>Home</h1></header><button type=button>Count: `);function o(){let{getCount:e,increment:n}=i();return(()=>{var i=a(),o=i.firstChild.nextSibling;return o.firstChild,t(o,`click`,n,!0),r(o,e,null),i})()}e([`click`]);export{o as default};

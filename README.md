@@ -1,4 +1,4 @@
-# {{NAME}}
+# [[NAME]]
 
 Personal starting point for SolidJS SPAs.
 
